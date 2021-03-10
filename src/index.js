@@ -79,13 +79,17 @@ app.put('/todos/:id', checksExistsUserAccount, (request, response) => {
   const user = users.find(user => user.username === username);
   const todoIndexUpdate = user.todos.findIndex(todo => todo.id === id);
 
+  if (todoIndexUpdate < 0) {
+    return response.status(404).json({ error: 'Todo not found!' });
+  }
+
   const oldDataTodo = user.todos[todoIndexUpdate];
 
   const newTodo = { ...oldDataTodo, title, deadline };
 
   user.todos[todoIndexUpdate] = newTodo;
 
-  return response.status(200).json(user.todos[todoIndexUpdate])
+  return response.status(200).json(user.todos[todoIndexUpdate]);
 });
 
 app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
@@ -95,13 +99,17 @@ app.patch('/todos/:id/done', checksExistsUserAccount, (request, response) => {
   const user = users.find(user => user.username === username);
   const todoIndexUpdate = user.todos.findIndex(todo => todo.id === id);
 
+  if (todoIndexUpdate < 0) {
+    return response.status(404).json({ error: 'Todo not found!' });
+  }
+
   const oldDataTodo = user.todos[todoIndexUpdate];
 
   const newTodo = { ...oldDataTodo, done: true };
 
   user.todos[todoIndexUpdate] = newTodo;
 
-  return response.status(200).json(user.todos[todoIndexUpdate])
+  return response.status(200).json(user.todos[todoIndexUpdate]);
 });
 
 app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
@@ -110,6 +118,10 @@ app.delete('/todos/:id', checksExistsUserAccount, (request, response) => {
 
   const user = users.find(user => user.username === username);
   const todoIndexDelete = user.todos.findIndex(todo => todo.id === id);
+
+  if (todoIndexDelete < 0) {
+    return response.status(404).json({ error: 'Todo not found!' });
+  }
 
   user.todos.splice(todoIndexDelete, 1);
 
